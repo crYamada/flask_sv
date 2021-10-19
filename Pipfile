@@ -23,4 +23,4 @@ cryptography = "*"
 sync = "*"
 
 [scripts]
-start = "python backend/main.py"
+start = "python backend/src/main.py"
