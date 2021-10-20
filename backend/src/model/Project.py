@@ -18,10 +18,12 @@ from model.db import engine
 from model.db import Base
 
 # model class
+
+
 class Project(Base):
     """
-    accountモデル
-    flask_svシステムにログインするアカウントを管理するモデル
+    projectモデル
+    案件などのプロジェクトを管理するモデル
 
     Parameters
     ----------
@@ -67,6 +69,7 @@ class Project(Base):
         return {
             "id": str(self.id),
             "project_name": self.project_name,
+            "description": self.description,
             "status": int(self.status),
             "creater_id": int(self.creater_id),
             "created_at": strftime(self.created_at),
