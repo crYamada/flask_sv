@@ -54,7 +54,7 @@ class Project(Base):
         return {
             'id': int(self.id),
             'project_name': str(self.project_name),
-            'description':str(self.description),
+            'description': str(self.description),
             'status': int(self.status),
             'creater_id': int(self.creater_id),
             'created_at': strptime(self.created_at),

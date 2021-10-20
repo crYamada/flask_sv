@@ -4,4 +4,4 @@ from restapi import ProjectApi
 
 system_account_id=999
 
-project_bp = Blueprint('project3_app', __name__, url_prefix='/api/project3')
+project3_bp = Blueprint('project3_app', __name__, url_prefix='/api/project3')

@@ -17,6 +17,7 @@ from restapi.project_group2_app import project_group2_bp
 from restapi.authority2_app import authority2_bp
 from restapi.page2_app import page2_bp
 from restapi.project3_app import project3_bp
+
 from session import session_pool
 
 app = Flask(__name__, static_folder='../../frontend/dist/static', template_folder='../../frontend')
