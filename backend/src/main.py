@@ -16,6 +16,7 @@ from restapi.task_status2_app import task_status2_bp
 from restapi.project_group2_app import project_group2_bp
 from restapi.authority2_app import authority2_bp
 from restapi.page2_app import page2_bp
+from restapi.project3_app import project3_bp
 from session import session_pool
 
 app = Flask(__name__, static_folder='../../frontend/dist/static', template_folder='../../frontend')
@@ -36,6 +37,7 @@ app.register_blueprint(task_status2_bp)
 app.register_blueprint(project_group2_bp)
 app.register_blueprint(authority2_bp)
 app.register_blueprint(page2_bp)
+app.register_blueprint(project3_bp)
 app.config['JSON_AS_ASCII'] = False
 
 @app.route('/', defaults={'path': ''})
