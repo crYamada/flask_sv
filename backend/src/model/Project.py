@@ -76,3 +76,27 @@ class Project(Base):
             "updater_id": int(self.updater_id),
             "updated_at": strftime(self.updated_at)
         }
+
+
+def create(project_dict, operation_account_id):
+    project = Project()
+    project.project_name = project_dict['project_name']
+    project.description = project_dict['description']
+    project.status = project_dict['status']
+    project.creater_id = project_dict['creater_id']
+    project.created_at = project_dict['created_at']
+    project.updater_id = project_dict['updater_id']
+    project.updated_at = project_dict['updated_at']
+    Session = sessionmaker(bind=engine)
+    ses = Session()
+    ses.begin()
+    try:
+        ses.add(project)
+        ses.commit()
+        res = True
+    except:
+        ses.rollback()
+        res = False
+    finally:
+        ses.close()
+    return res
