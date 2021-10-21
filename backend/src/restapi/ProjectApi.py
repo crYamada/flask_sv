@@ -37,7 +37,7 @@ def search(request):
 
     except Exception as e:
         code = "E0009"
-        message = "Search failed: " + str(e)
+        message = "Searching project was fail.: " + str(e)
         body = ""
 
     result_json = {
