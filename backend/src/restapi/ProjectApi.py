@@ -40,7 +40,7 @@ def update(project_request):
         print(f"ProjectApi#update res={res[0]},{res[1]}")
         if res[0] == True:
             code = "I0001"
-            message = "Updated project was successfully."
+            message = "Updating project was successfully."
         else:
             code = "E0001"
             message = res[1]
@@ -48,7 +48,7 @@ def update(project_request):
     except Exception as e:
         code = "E0009"
         print(f"update error={e}")
-        message = f"Updated failed {e}"
+        message = f"Updating project was fail {e}"
 
     result_json = {
         "body": "",
@@ -86,14 +86,14 @@ def updateWithLock(project_request):
             res = Project.updateWithLock(project, operation_account_id)
             if res[0] == True:
                 code = "I0001"
-                message = "Updated project was successfully."
+                message = "Updating project was successfully."
             else:
                 code = "E0001"
                 message = res[1]
 
         except Exception as e:
             code = "E0009"
-            message = f"Updated failed {e}"
+            message = f"Updating project was fail {e}"
     else:
         code = "E0002"
         message = "Invalid Argument(operation_account_id is necessary)"
