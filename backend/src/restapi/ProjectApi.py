@@ -11,7 +11,7 @@ from model.common import strptime
 
 def create(project_request):
     """
-    /project/createで呼び出されたAPIの作成処理
+    /project3/createで呼び出されたAPIの作成処理
 
     Parameters
     ----------
@@ -41,14 +41,14 @@ def create(project_request):
     try:
         if Project.create(project, operation_account_id) == True:
             code = "I0001"
-            message = "Created project was successfully."
+            message = "Creating project was successfully."
         else:
             code = "E0001"
             message = ""
 
     except:
         code = "E0009"
-        message = "Created project was failed."
+        message = "Creating project was fail."
 
     result_json = {
         "body": "",

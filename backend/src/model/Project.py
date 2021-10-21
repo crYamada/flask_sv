@@ -94,9 +94,12 @@ def create(project_dict, operation_account_id):
         ses.add(project)
         ses.commit()
         res = True
+
     except:
         ses.rollback()
         res = False
+
     finally:
         ses.close()
+
     return res
