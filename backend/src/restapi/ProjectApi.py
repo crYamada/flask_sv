@@ -70,3 +70,74 @@ def getById(project_id, operation_account_id):
     # "updater_id" : result.updater_id,
     # "updated_at" : result.updated_at.strftime("%Y-%m-%d %H:%M:%S),
     return result_json
+
+
+def getByIdWithLock(project_request):
+    """
+    /project3/lock/<id>で呼び出されたAPIの検索とロック処理
+
+    Parameters
+    ----------
+    project_request: json
+    {
+       project_id : int,     検索するアカウントのアカウントID
+       operation_account_id : int    Webアプリケーション操作アカウントのID
+    }
+    Returns
+    -------
+    ret
+        json形式のアカウント詳細
+    {
+        "body": {
+            "project_name": <project_name>,
+            "description": <description>,
+            "status": <status>,
+            "created_by": <creater_id>,
+            "created_at": <created_at>,
+            "last_updated_by": <updater_id>,
+            "last_updated_at": <update_at>
+        },
+        "status": {
+            "code" : "I0001",
+            "message" : "",
+            "detail" : ""
+        }
+    }
+    """
+    body = ""
+    project_id = project_request.get('id')
+    operation_account_id = project_request.get('operation_account_id')
+
+    try:
+        result = Project.getByIdWithLock(project_id, operation_account_id)
+        if result.id > 0:
+            code = "I0001"
+            message = "Locking project is successfully."
+            body = {
+                "id": result.id,
+                "project_name": result.project_name,
+                "description": result.description,
+                "status":  result.status,
+                "created_by": result.creater_id,
+                "created_at": result.created_at,
+                "last_updated_by": result.updater_id,
+                "last_updated_at": result.updated_at,
+            }
+        else:
+            code = "E0001"
+            message = ""
+
+    except:
+        code = "E0009"
+        message = "Locking project is fail."
+
+    # TODO モデルの検索結果(正常・異常)によってレスポンスの出力内容を変える
+    result_json = {
+        "body": body,
+        "status": {
+            "code": "I0001",
+            "message": "",
+            "detail": ""
+        }
+    }
+    return result_json
