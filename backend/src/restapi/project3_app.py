@@ -20,3 +20,12 @@ def lockAccount():
     project_json = ProjectApi.getByIdWithLock(payload)
     return jsonify(project_json)
     # TODO lockする場合はロックするユーザーidも渡す必要がある。POSTへの変更が望ましい。
+
+
+@project3_bp.route('/create', methods=['POST'])
+def createProject():
+    #payload = request.data.decode('utf-8')
+    payload = request.json
+    print(f"payload={payload}")
+    response_json = ProjectApi.create(payload)
+    return jsonify(response_json)

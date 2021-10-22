@@ -79,6 +79,8 @@ class Project(Base):
         }
 
 # get List data
+
+
 def getByList(arr):
     res = []
     for item in arr:
@@ -86,12 +88,15 @@ def getByList(arr):
     return res
 
 # get all mydata record
+
+
 def getAll():
     Session = sessionmaker(bind=engine)
     ses = Session()
     res = ses.query(Project).all()
     ses.close()
     return res
+
 
 def getById(project_id, operation_account_id):
     """
@@ -131,4 +136,30 @@ def getByIdWithLock(project_id, operation_account_id):
     res = ses.query(Project).get(project_id)
     session_pool[operation_account_id] = (ses, res)
     # ses.close()
+
+
+def create(project_dict, operation_account_id):
+    project = Project()
+    project.project_name = project_dict['project_name']
+    project.description = project_dict['description']
+    project.status = project_dict['status']
+    project.creater_id = project_dict['creater_id']
+    project.created_at = project_dict['created_at']
+    project.updater_id = project_dict['updater_id']
+    project.updated_at = project_dict['updated_at']
+    Session = sessionmaker(bind=engine)
+    ses = Session()
+    ses.begin()
+    try:
+        ses.add(project)
+        ses.commit()
+        res = True
+
+    except:
+        ses.rollback()
+        res = False
+
+    finally:
+        ses.close()
+
     return res
