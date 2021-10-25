@@ -19,7 +19,7 @@ def test_getById():
         'updated_at': '2021-12-31 00:00:00'
     }
 
-    Project.create(project, 999) == True
+    assert Project.create(project, 999) == True
 
     project_dict = {
         'project_name': "flask_sv",
