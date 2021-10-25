@@ -33,10 +33,10 @@ def test_project_get():
         'status': 0
     }
     result = Project.search(project_dict, 1)
-    account_id = result[0].id
+    project_id = result[0].id
 
     # APIから確認
-    url = f"http://localhost:5000/api/project3/get/{account_id}"
+    url = f"http://localhost:5000/api/project3/get/{project_id}"
     headers = {'Accept-Encoding': 'identity, deflate, compress, gzip',
                'Accept': '*/*', 'User-Agent': 'flask_sv/0.0.1',
                'Content-type': 'application/json; charset=utf-8',
@@ -55,3 +55,52 @@ def test_project_get():
     # assert data['body']['last_updated_at'] == project['updated_at']
     assert data['status']['code'] == "I0001"
     assert data['status']['message'] == ""
+
+
+def test_project_create():
+    """
+    """
+    # modelから試験データ登録
+    test_project_name = 'api_project_get'
+    test_description = 'test of create api'
+    test_status = 0
+    test_operation_account_id = 997
+    payload = {
+        'project_name': test_project_name,
+        'description': test_description,
+        'status': test_status,
+        'operation_account_id': test_operation_account_id
+    }
+
+    # createのテスト
+    # APIの実行
+    url = f"http://localhost:5000/api/project3/create"
+    headers = {'Accept-Encoding': 'identity, deflate, compress, gzip',
+               'Accept': '*/*', 'User-Agent': 'flask_sv/0.0.1',
+               'Content-type': 'application/json; charset=utf-8',
+               }
+    response = requests.post(url, headers=headers, json=payload)
+
+    assert response.status_code == 200
+    data = json.loads(response.text)
+    assert data['body'] == ""
+    assert data['status']['code'] == "I0001"
+    assert data['status']['message'] == "Creating project was successfully."
+
+    # 作成されたデータの確認
+    project_dict = {
+        'project_name': test_project_name,
+        'status': test_status
+    }
+    result = Project.search(project_dict, 999)
+    project_id = result[0].id
+
+    result_json = ProjectApi.getById(project_id, 100)
+    print(f"result_json:{result_json}")
+    assert result_json['body']['project_name'] == test_project_name
+    assert result_json['body']['description'] == test_description
+    assert result_json['body']['status'] == test_status
+    assert result_json['body']['created_by'] == test_operation_account_id
+    assert result_json['body']['updated_by'] == test_operation_account_id
+    assert result_json['status']['code'] == "I0001"
+    assert result_json['status']['message'] == ""
