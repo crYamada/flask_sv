@@ -56,3 +56,9 @@ def searchProject():
     print(f"payload={payload}")
     response_json = ProjectApi.search(payload)
     return jsonify(response_json)
+
+
+@project3_bp.route('/delete/<id>', methods=['GET'])
+def deleteProject(id):
+    project_json = ProjectApi.delete(id, system_account_id)
+    return jsonify(project_json)

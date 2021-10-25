@@ -295,3 +295,28 @@ def search(project_dict, operation_account_id):
     lambda r: print(f"r={r}"), res
     ses.close()
     return res
+
+
+def delete(project_id, operation_account_id):
+    Session = scoped_session(sessionmaker(bind=engine, autocommit=False))
+    ses = Session()
+    project_record = ses.query(Project).with_for_update().get(project_id)
+    try:
+        project_record.status = Status.getStatusKey("DELETE")
+        ses.add(project_record)
+        # 他のプロセスによるロックを待つ
+        # time.sleep(1)
+        ses.commit()
+        message = ""
+        res = True
+
+    except Exception as e:
+        message = str(e)
+        print(f"Project#delete error:{message}")
+        ses.rollback()
+        res = False
+
+    finally:
+        ses.close()
+
+    return (res, message)
