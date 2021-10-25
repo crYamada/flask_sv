@@ -79,3 +79,41 @@ def test_create():
     assert results[0].updater_id == project['updater_id']
     assert results[0].updated_at == datetime.datetime.strptime(
         project['updated_at'], '%Y-%m-%d %H:%M:%S')
+
+
+def test_update():
+    """
+    """
+    project = {
+        'project_name': 'flask_sv3',
+        'description': 'test of update',
+        'status': 0,
+        'creater_id': 800,
+        'created_at': '2021-01-01 00:00:00',
+        'updater_id': 800,
+        'updated_at': '2021-12-31 00:00:00'
+    }
+
+    assert Project.create(project, 800) == True
+    project_dict = {
+        'project_name': "flask_sv3",
+        'status': 0
+    }
+
+    results = Project.search(project_dict, 1)
+    project_id = results[0].id
+    result = Project.getById(project_id, 999)
+
+    project_update = {
+        'id': project_id,
+        'project_name': 'flask_sv4',
+        'status': 1
+    }
+    assert Project.update(project_update, 999)[0] == True
+
+    result = Project.getById(project_id, 999)
+    assert result.project_name == project_update['project_name']
+    assert result.description == project['description']
+    assert result.status == project_update['status']
+    assert result.created_by == project['creater_id']
+    assert result.updated_by == 999

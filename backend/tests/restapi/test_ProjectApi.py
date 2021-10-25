@@ -104,3 +104,61 @@ def test_project_create():
     assert result_json['body']['updated_by'] == test_operation_account_id
     assert result_json['status']['code'] == "I0001"
     assert result_json['status']['message'] == ""
+
+
+def test_project_update():
+    """
+    """
+    project = {
+        'project_name': 'update_project',
+        'description': 'test of update api',
+        'status': 0,
+        'creater_id': 700,
+        'created_at': '2021-01-01 00:00:00',
+        'updater_id': 700,
+        'updated_at': '2021-12-31 00:00:00'
+    }
+    operation_account_id = 998
+    # create
+    assert Project.create(project, 700) == True
+
+    search_query = {
+        'project_name': 'update_project',
+        'status': 0,
+        'creater_id': 700
+    }
+    result = Project.search(search_query, 999)
+
+    assert result[0].project_name == project['project_name']
+
+    project_id = result[0].id
+    payload = {
+        'id': project_id,
+        'project_name': 'update_project_modified',
+        'status': 2,
+        'operation_account_id': str(operation_account_id)
+    }
+
+    # APIから確認
+    url = f"http://localhost:5000/api/project3/update"
+    headers = {'Accept-Encoding': 'identity, deflate, compress, gzip',
+               'Accept': '*/*', 'User-Agent': 'flask_sv/0.0.1',
+               'Content-type': 'application/json; charset=utf-8',
+               }
+    response = requests.post(url, headers=headers, json=payload)
+
+    # HTTP Statusコードが200であること
+    assert response.status_code == 200
+
+    data = json.loads(response.text)
+    assert data['body'] == ""
+    assert data['status']['code'] == "I0001"
+    assert data['status']['message'] == "Updating project was successfully."
+
+    search_query = {
+        'project_name': 'update_project_modified',
+    }
+    result = Project.search(search_query, 999)
+    assert result[0].created_by == project['creater_id']
+    assert result[0].updated_by == operation_account_id
+    assert result[0].status == payload['status']
