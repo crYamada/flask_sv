@@ -12,7 +12,7 @@ from model.common import strftime
 from model.common import strptime
 
 
-def test_account_get():
+def test_project_get():
     """
     restapi/getById
     """
