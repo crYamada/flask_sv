@@ -64,7 +64,7 @@ class Project(Base):
             'updater_id': int(self.updater_id),
             'updated_at': strptime(self.updated_at)
         }
-    # datetime.strptime(str(self.start_on), "%Y-%m-%d %H:%M:%S")
+    # datetime.strptime(str(self.project_name), "%Y-%m-%d %H:%M:%S")
 
     def toJson(self):
         return {
@@ -242,3 +242,56 @@ def updateWithLock(project_dict, operation_account_id):
         ses.close()
 
     return (res, message)
+
+
+def search(project_dict, operation_account_id):
+    """
+    dictプロジェクトからprojectテーブルを検索し、該当したProjectオブジェクト群を取得する
+
+    Parameters
+    ----------
+    {
+        'id':
+        'project_name':
+        'status':
+        'creater_id':
+        'created_at':
+        'updater_id':
+        'updated_at':
+    }
+
+    Returns
+    -------
+    Projectオブジェクトのリスト
+    """
+    print(f"project_dict={project_dict}")
+    Session = sessionmaker(bind=engine)
+    ses = Session()
+    res = None
+    rs = ses.query(Project)
+    v = project_dict.get('id')
+    if (v != None):
+        rs = rs.filter(Project.id == v)
+    v = project_dict.get('project_name')
+    if (v != None):
+        rs = rs.filter(Project.project_name == v)
+    v = project_dict.get('status')
+    if (v != None):
+        rs = rs.filter(Project.status == v)
+    v = project_dict.get('creater_id')
+    if (v != None):
+        rs = rs.filter(Project.creater_id == v)
+    v = project_dict.get('created_at')
+    if (v != None):
+        rs = rs.filter(Project.created_at == v)
+    v = project_dict.get('updater_id')
+    if (v != None):
+        rs = rs.filter(Project.updater_id == v)
+    v = project_dict.get('updated_at')
+    if (v != None):
+        rs = rs.filter(Project.updated_at == v)
+
+    res = rs.all()
+    lambda r: print(f"r={r}"), res
+    ses.close()
+    return res

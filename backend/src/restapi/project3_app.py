@@ -47,3 +47,12 @@ def updateProjectWithLock():
     print(f"payload={payload}")
     response_json = ProjectApi.updateWithLock(payload)
     return jsonify(response_json)
+
+
+@project3_bp.route('/search', methods=['POST'])
+def searchProject():
+    #payload = request.data.decode('utf-8')
+    payload = request.json
+    print(f"payload={payload}")
+    response_json = ProjectApi.search(payload)
+    return jsonify(response_json)

@@ -295,6 +295,48 @@ def updateWithLock(project_request):
     return result_json
 
 
+def search(request):
+    """
+    /project3/searchで呼び出されたAPIの検索処理
+
+    Parameters
+    ----------
+    project_request : json
+        アカウント検索項目
+    operation_account_id : int
+        Webアプリケーション操作アカウントのID
+
+    Returns
+    -------
+    JSON形式の処理結果
+        正常
+        異常
+    """
+
+    operation_account_id = request.get('operation_account_id')
+    project_request = convertdict(request)
+    try:
+        results = Project.search(project_request, operation_account_id)
+        code = "I0001"
+        message = f"Found ({len(results)}) records."
+        body = list(map(lambda s: s.toJson(), results))
+
+    except Exception as e:
+        code = "E0009"
+        message = "Searching project was fail.: " + str(e)
+        body = ""
+
+    result_json = {
+        "body": body,
+        "status": {
+            "code": code,
+            "message": message,
+            "detail": ""
+        }
+    }
+    return result_json
+
+
 def convertdict(from_dict):
     print(f"convertdict from_dict={from_dict}")
     target_dict = {}
