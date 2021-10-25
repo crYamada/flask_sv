@@ -29,3 +29,21 @@ def createProject():
     print(f"payload={payload}")
     response_json = ProjectApi.create(payload)
     return jsonify(response_json)
+
+
+@project3_bp.route('/update', methods=['POST'])
+def updateProject():
+    #payload = request.data.decode('utf-8')
+    payload = request.json
+    print(f"payload={payload}")
+    response_json = ProjectApi.update(payload)
+    return jsonify(response_json)
+
+
+@project3_bp.route('/update_for_lock', methods=['POST'])
+def updateProjectWithLock():
+    #payload = request.data.decode('utf-8')
+    payload = request.json
+    print(f"payload={payload}")
+    response_json = ProjectApi.updateWithLock(payload)
+    return jsonify(response_json)
