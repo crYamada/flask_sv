@@ -101,9 +101,55 @@ def test_project_create():
     assert result_json['body']['description'] == test_description
     assert result_json['body']['status'] == test_status
     assert result_json['body']['created_by'] == test_operation_account_id
-    assert result_json['body']['updated_by'] == test_operation_account_id
+    assert result_json['body']['last_updated_by'] == test_operation_account_id
     assert result_json['status']['code'] == "I0001"
     assert result_json['status']['message'] == ""
+
+
+def test_project_search():
+    """
+    """
+    operation_account_id = 996
+    project = {
+        'project_name': 'search_project',
+        'description': 'test of search api',
+        'status': 0,
+        'creater_id': 200,
+        'created_at': '2021-01-01 00:00:00',
+        'updater_id': 200,
+        'updated_at': '2021-12-31 00:00:00'
+    }
+
+    # createのテスト
+    assert Project.create(project, 999) == True
+
+    payload = {
+        "project_name": "search_project",
+        "creater_id": 200,
+        "operation_account_id": operation_account_id
+    }
+    #result = Project.search(query, 999)
+
+    # APIから確認
+    url = f"http://localhost:5000/api/project3/search"
+    headers = {'Accept-Encoding': 'identity, deflate, compress, gzip',
+               'Accept': '*/*', 'User-Agent': 'flask_sv/0.0.1',
+               'Content-type': 'application/json; charset=utf-8',
+               }
+    response = requests.post(url, headers=headers, json=payload)
+
+    # HTTP Statusコードが200であること
+    assert response.status_code == 200
+
+    print(f"test_project_search():json response.text={response.text}")
+    # BODYをjsonでパースできること
+    data = json.loads(response.text)
+    print(f"test_account_search():json data={data}")
+    assert data['body'][0]['project_name'] == payload['project_name']
+    assert data['body'][0]['creater_id'] == project['creater_id']
+    assert data['body'][0]['status'] == project['status']
+    assert data['status']['code'] == "I0001"
+    assert data['status']['message'] == "Found (1) records."
 
 
 def test_project_update():
@@ -191,8 +237,8 @@ def test_project_update_with_lock():
     project_id = result[0].id
 
     payload = {
-        "id": project_id,
-        "operation_account_id": operation_account_id
+        'id': project_id,
+        'operation_account_id': operation_account_id
     }
 
     # APIから検索しロックをする
@@ -211,8 +257,8 @@ def test_project_update_with_lock():
     assert data['body']['project_name'] == project['project_name']
     assert data['body']['description'] == project['description']
     assert data['body']['status'] == project['status']
-    assert data['body']['creater_id'] == project['creater_id']
-    assert data['body']['updater_id'] == project['updater_id']
+    assert data['body']['created_by'] == project['creater_id']
+    assert data['body']['last_updated_by'] == project['updater_id']
     assert data['status']['code'] == "I0001"
     assert data['status']['message'] == ""
 
