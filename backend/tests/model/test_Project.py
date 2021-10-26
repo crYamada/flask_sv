@@ -115,5 +115,5 @@ def test_update():
     assert result.project_name == project_update['project_name']
     assert result.description == project['description']
     assert result.status == project_update['status']
-    assert result.created_by == project['creater_id']
-    assert result.updated_by == 999
+    assert result.creater_id == project['creater_id']
+    assert result.updater_id == 999
