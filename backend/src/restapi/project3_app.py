@@ -14,9 +14,9 @@ def getProject(id):
 
 
 @project3_bp.route('/lock', methods=['POST'])
-def lockAccount():
+def lockProject():
     payload = request.json
-    print(f"account_app#lockAccount() payload={payload}")
+    print(f"project3_app#lockProject() payload={payload}")
     project_json = ProjectApi.getByIdWithLock(payload)
     return jsonify(project_json)
     # TODO lockする場合はロックするユーザーidも渡す必要がある。POSTへの変更が望ましい。
