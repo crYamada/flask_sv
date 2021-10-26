@@ -35,6 +35,14 @@ def searchAccount():
     response_json = AccountApi.search(payload)
     return jsonify(response_json)
 
+@account_bp.route('/search_range', methods=['POST'])
+def searchRangeAccount():
+    #payload = request.data.decode('utf-8')
+    payload = request.json
+    print(f"payload={payload}")
+    response_json = AccountApi.search_range(payload)
+    return jsonify(response_json)
+
 @account_bp.route('/update', methods=['POST'])
 def updateAccount():
     #payload = request.data.decode('utf-8')

@@ -150,6 +150,57 @@ def test_account_search():
     assert data['status']['code'] == 'I0001'
     assert data['status']['message'] == 'Found (1) records.'
 
+def test_account_search_range():
+    """
+    """
+    operation_account_id=996
+    account = {
+        'account_name' : "search_range_account",
+        "start_on":"2021-05-23 00:00:00",
+        "end_on":"2030-12-31 00:00:00",
+        'created_by' : 999,
+        'created_at' : datetime.datetime.now(),
+        'updated_by' : 999,
+        'updated_at' : datetime.datetime.now(),
+        'status' :  Status.getStatusKey("NEW")
+    }
+
+    # createのテスト
+    assert Account.create(account, 999) == True
+
+    payload = {
+        "account_name":"search_range_account",
+        'from_start_on' : '2021-05-20 00:00:00',
+        'to_start_on' : '2021-05-25 00:00:00',
+        'from_end_on' : '2030-12-30 00:00:00',
+        'to_end_on' : '2031-01-01 00:00:00',
+        "operation_account_id": operation_account_id
+    }
+    #result = Account.search(query, 999)
+
+    # APIから確認
+    url = f"http://localhost:5000/api/account/search_range"
+    headers = {'Accept-Encoding': 'identity, deflate, compress, gzip',
+               'Accept': '*/*', 'User-Agent': 'flask_sv/0.0.1',
+               'Content-type': 'application/json; charset=utf-8',
+               }
+    response = requests.post(url, headers=headers, json=payload)
+
+    # HTTP Statusコードが200であること
+    assert response.status_code == 200
+
+    print(f"test_account_search_range():json response.text={response.text}")
+    # BODYをjsonでパースできること
+    data = json.loads(response.text)
+    print(f"test_account_search_range():json data={data}")
+    assert data['body'][0]['account_name'] == account["account_name"]
+    assert data['body'][0]['start_on'] == account["start_on"]
+    assert data['body'][0]['end_on'] == account["end_on"]
+    assert data['body'][0]['created_by'] == 999
+    assert data['status']['code'] == 'I0001'
+    assert data['status']['message'] == 'Found (1) records.'
+
+
 def test_account_update():
     """
     """

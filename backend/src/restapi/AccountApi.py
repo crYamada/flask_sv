@@ -228,6 +228,45 @@ def search(request):
     }
     return result_json
 
+def search_range(request):
+    """
+    /account/search_rangeで呼び出されたAPIの検索処理
+
+    Parameters
+    ----------
+    account_request : json
+        アカウント検索項目
+    operation_account_id : int
+        Webアプリケーション操作アカウントのID
+
+    Returns
+    -------
+    JSON形式の処理結果
+        正常
+        異常
+    """
+
+    operation_account_id = request.get('operation_account_id')
+    account_request = convertdict(request)
+    try:
+        results = Account.search(account_request, operation_account_id)
+        code="I0001"
+        message=f"Found ({len(results)}) records."
+        body=list(map(lambda s: s.toJson(), results))
+    except Exception as e:
+        code="E0009"
+        message="Search failed: " + str(e)
+        body=""
+    result_json = {
+        "body": body,
+        "status": {
+            "code" : code,
+            "message" : message,
+            "detail" : ""
+        }
+    }
+    return result_json
+
 def update(account_request):
     """
     /account/updateで呼び出されたAPIの更新処理

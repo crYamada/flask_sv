@@ -191,6 +191,77 @@ def search(account_dict, operation_account_id):
     ses.close()
     return res
             
+def search_range(account_dict, operation_account_id):
+    """
+    dictアカウントからaccountテーブルを検索し、該当したAccountオブジェクト群を取得する
+    作成日時、更新日時については時間の範囲指定による検索を行う
+
+    Parameters
+    ----------
+    {
+        'account_name' : 文字列str(self.account_name),
+        'from_start_on' : 文字列 '2020-05-01 00:00:00',
+        'to_start_on' : 文字列 '2020-05-31 00:00:00',
+        'from_end_on' : 文字列 '2020-12-01 00:00:00',
+        'to_end_on' : 文字列 '2020-12-31 00:00:00',
+        'created_by' : account_id,
+        'created_at' : 文字列 '2020-12-31 00:00:00',
+        'updated_by' : account_id,
+        'updated_at' : 文字列 '2020-12-31 00:00:00',
+        'status' : statusの数値
+    }
+
+    Returns
+    -------
+    Accountオブジェクトのリスト
+    """
+    print(f"account_dict={account_dict}")
+    Session = sessionmaker(bind=engine)
+    ses = Session()
+    res = None
+    rs = ses.query(Account)
+    v = account_dict.get('account_name')
+    if (v != None):
+        rs = rs.filter(Account.account_name==v)
+
+    v_from = account_dict.get('from_start_on')
+    v_to = account_dict.get('to_start_on')
+    if (v_from != None) and (v_to != None):
+        rs = rs.filter(strptime(v_from, '%Y-%m-%d %H:%M:%S') <= strptime(Account.start_on, '%Y-%m-%d %H:%M:%S'), strptime(v_to, '%Y-%m-%d %H:%M:%S') > strptime(Account.start_on, '%Y-%m-%d %H:%M:%S'))    
+    elif (v_from != None):
+        rs = rs.filter(strptime(v_from, '%Y-%m-%d %H:%M:%S') <= strptime(Account.start_on, '%Y-%m-%d %H:%M:%S'))    
+    elif (v_to != None):
+        rs = rs.filter(strptime(v_to, '%Y-%m-%d %H:%M:%S') > strptime(Account.start_on, '%Y-%m-%d %H:%M:%S'))
+    v_from = account_dict.get('from_end_on')
+    v_to = account_dict.get('to_end_on')
+    if (v_from != None) and (v_to != None):
+        rs = rs.filter(strptime(v_from, '%Y-%m-%d %H:%M:%S') <= strptime(Account.end_on, '%Y-%m-%d %H:%M:%S'), strptime(v_to, '%Y-%m-%d %H:%M:%S') > strptime(Account.end_on, '%Y-%m-%d %H:%M:%S'))    
+    elif (v_from != None):
+        rs = rs.filter(strptime(v_from, '%Y-%m-%d %H:%M:%S') <= strptime(Account.end_on, '%Y-%m-%d %H:%M:%S'))
+    elif (v_to != None):
+        rs = rs.filter(strptime(v_to, '%Y-%m-%d %H:%M:%S') > strptime(Account.end_on, '%Y-%m-%d %H:%M:%S'))
+    v = account_dict.get('created_by')
+    if (v != None):
+        rs = rs.filter(Account.created_by==v)
+    v = account_dict.get('created_at')
+    if (v != None):
+        rs = rs.filter(Account.created_at==v)
+    v = account_dict.get('updated_by')
+    if (v != None):
+        rs = rs.filter(Account.updated_by==v)
+    v = account_dict.get('updated_at')
+    if (v != None):
+        rs = rs.filter(Account.updated_at==v)
+    v = account_dict.get('status')
+    if (v != None):
+        rs = rs.filter(Account.status==v)
+    rs = rs.filter(Account.status!=Status.getStatusKey("DELETE"))
+
+    res = rs.all()
+    lambda r: print(f"r={r}"),res
+    ses.close()
+    return res
+
 def create(account_dict, operation_account_id):
     account = Account()
     account.account_name = account_dict['account_name']
