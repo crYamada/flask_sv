@@ -62,3 +62,12 @@ def searchProject():
 def deleteProject(id):
     project_json = ProjectApi.delete(id, system_account_id)
     return jsonify(project_json)
+
+
+class Spam(Resource):
+    def get(self):
+        return {'id': 42, 'name': 'Name'}
+
+
+api = Api(project3_bp)
+api.add_resource(Spam, '/spam')
