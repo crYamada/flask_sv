@@ -249,3 +249,47 @@ def test_project_update_with_lock():
     assert result[0].creater_id == project['creater_id']
     assert result[0].updater_id == operation_account_id
     assert result[0].status == payload['status']
+
+
+def test_project_delete():
+    """
+    """
+    project = {
+        'project_name': 'delete_project',
+        'description': 'test of delete api',
+        'status': 0,
+        'creater_id': 702,
+        'created_at': '2021-01-01 00:00:00',
+        'updater_id': 702,
+        'updated_at': '2021-12-31 00:00:00'
+    }
+
+    # create
+    Project.create(project, 999) == True
+
+    search_query = {
+        'project_name': 'delete_project',
+        'status': 0,
+        'creater_id': 702
+    }
+    result = Project.search(search_query, 999)
+    assert result[0].project_name == project['project_name']
+    account_id = result[0].id
+
+    # APIから確認
+    url = f"http://localhost:5000/api/project3/delete/{account_id}"
+    headers = {'Accept-Encoding': 'identity, deflate, compress, gzip',
+               'Accept': '*/*', 'User-Agent': 'flask_sv/0.0.1',
+               'Content-type': 'application/json; charset=utf-8',
+               }
+    response = requests.get(url, headers=headers)
+
+    # HTTP Statusコードが200であること
+    assert response.status_code == 200
+
+    data = json.loads(response.text)
+    print(
+        f"test_ProjectApi#test_project_delete data={data} code={data['status']['code']} message={data['status']['message']}")
+    assert data['body'] == ""
+    assert data['status']['code'] == "I0001"
+    assert data['status']['message'] == "Deleting project was successfully."
