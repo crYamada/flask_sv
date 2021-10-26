@@ -136,6 +136,7 @@ def getByIdWithLock(project_id, operation_account_id):
     res = ses.query(Project).get(project_id)
     session_pool[operation_account_id] = (ses, res)
     # ses.close()
+    return res
 
 
 def create(project_dict, operation_account_id):
