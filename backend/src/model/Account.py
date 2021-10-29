@@ -185,7 +185,7 @@ def search(account_dict, operation_account_id):
     if (v != None):
         rs = rs.filter(Account.status==v)
     rs = rs.filter(Account.status!=Status.getStatusKey("DELETE"))
-
+    print(f"rs={rs}")
     res = rs.all()
     lambda r: print(f"r={r}"),res
     ses.close()

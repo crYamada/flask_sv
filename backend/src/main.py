@@ -1,5 +1,7 @@
 from flask import Flask, render_template
 from restapi.account_app import account_bp
+from flask_cors import CORS
+
 from restapi.project_app import project_bp
 from restapi.story_app import story_bp
 from restapi.sprint_app import sprint_bp
@@ -20,7 +22,8 @@ from restapi.project3_app import project3_bp
 
 from session import session_pool
 
-app = Flask(__name__, static_folder='../../frontend/dist/static', template_folder='../../frontend')
+app = Flask(__name__, static_folder='../../frontend/dist/static',
+            template_folder='../../frontend')
 app.register_blueprint(account_bp)
 app.register_blueprint(project_bp)
 app.register_blueprint(story_bp)
@@ -40,11 +43,14 @@ app.register_blueprint(authority2_bp)
 app.register_blueprint(page2_bp)
 app.register_blueprint(project3_bp)
 app.config['JSON_AS_ASCII'] = False
+CORS(app)
+
 
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
 def index(path):
     return render_template('index.html')
+
 
 if __name__ == '__main__':
     app.run(debug=True)
